@@ -8,7 +8,8 @@ class TestValidator(unittest.TestCase):
             "name": "Sara Palacios",
             "email": "sara@example.com",
             "age": 25,
-            "ticket_type": "vip"
+            "ticket_type": "vip",
+            "identifier": "EV-1234"
         }
         self.assertEqual(validate_attendee(attendee), [])
 
@@ -40,7 +41,7 @@ class TestValidator(unittest.TestCase):
         }
         self.assertEqual(validate_attendee(attendee), [])
     
-    def test_invalid_identifier_1(self):
+    def test_invalid_identifier(self):
         attendee = {
         "name": "Mariano",
         "email": "mariano@example.com",
@@ -48,26 +49,22 @@ class TestValidator(unittest.TestCase):
         "ticket_type": "student",
         "identifier": "EV-12312"
         }
-        self.assertIn("Invalid registration code", validate_attendee(attendee))
-    
-    def test_invalid_identifier_2(self):
-        attendee = {
-        "name": "Mariano",
-        "email": "mariano@example.com",
-        "age": 18,
-        "ticket_type": "student",
-        "identifier": "EV1231"
-        }
+
+        attendee["identifier"] = "EV-12"
         self.assertIn("Invalid registration code", validate_attendee(attendee))
 
-    def test_invalid_identifier_3(self):
-        attendee = {
-        "name": "Mariano",
-        "email": "mariano@example.com",
-        "age": 18,
-        "ticket_type": "student",
-        "identifier": "EV-123"
-        }
+        attendee["identifier"] = "EX-1234"
+        self.assertIn("Invalid registration code", validate_attendee(attendee))
+
+        attendee["identifier"] = "EV1234"
+        self.assertIn("Invalid registration code", validate_attendee(attendee))
+
+        
+        attendee["identifier"] = "EV-12AB"
+        self.assertIn("Invalid registration code", validate_attendee(attendee))
+
+        attendee["identifier"] = ""
+        self.assertIn("Invalid registration code", validate_attendee(attendee))
         self.assertIn("Invalid registration code", validate_attendee(attendee))
 
 if __name__ == "__main__":
